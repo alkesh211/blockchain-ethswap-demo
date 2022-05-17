@@ -3,6 +3,7 @@ import Web3 from 'web3'
 import Token from '../abis/Token.json'
 import EthSwap from '../abis/EthSwap.json'
 import Navbar from './Navbar'
+import Main from './Main'
 import './App.css'
 
 class App extends Component {
@@ -41,6 +42,8 @@ class App extends Component {
     }else{
       window.alert('EthSwap contract not deployed to detected network.')
     }
+
+    this.setState({ loading: false })
   }
 
   async loadWeb3() {
@@ -63,11 +66,19 @@ class App extends Component {
       token: {},
       ethSwap: {},
       ethBalance: '0',
-      tokenBalance: '0'
+      tokenBalance: '0',
+      loading: false
     };
   }
 
   render() {
+    let content
+    if(this.state.loading) {
+      content = <p id="loader" className='text-center'>Loading...</p>
+    } else {
+      content = <Main />
+    }
+
     return (
       <div>
         <Navbar account={this.state.account} />
@@ -79,11 +90,9 @@ class App extends Component {
                   href="http://www.dappuniversity.com/bootcamp"
                   target="_blank"
                   rel="noopener noreferrer"
-                >
-                  
+                >                  
                 </a>
-                <h1>Hello, World</h1>
-                
+                {content}
               </div>
             </main>
           </div>
