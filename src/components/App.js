@@ -61,9 +61,19 @@ class App extends Component {
 
   buyTokens = (etherAmout) => {
     this.setState({ loading: true })
-    this.state.ethSwap.methods.buyTokens()
-                              .send({ value: etherAmout, from: this.state.account})
-                              .on('transactionHash', (hash) => (this.setState({ loading: false })))}
+    this.state.ethSwap.methods.buyTokens().send({ value: etherAmout, from: this.state.account}).on('transactionHash', (hash) => {
+      this.setState({ loading: false })
+    })
+  }
+
+  sellTokens = (tokenAmount) => {
+    this.setState({ loading: true })
+    this.state.token.methods.approve(this.state.ethSwap.address, tokenAmount ).send({from: this.state.account}).on('transactionHash', (hash) => {
+      this.state.ethSwap.methods.sellTokens(tokenAmount).send({from: this.state.account}).on('transactionHash', (hash) => {
+        this.setState({ loading: false })
+      })
+    })
+  }
 
   constructor(props) {
     super(props);
@@ -86,6 +96,7 @@ class App extends Component {
         ethBalance={this.state.ethBalance} 
         tokenBalance={this.state.tokenBalance}
         buyTokens={this.buyTokens}
+        sellTokens={this.sellTokens}
       />
     }
 
